@@ -42,13 +42,16 @@ def parse_price(html: str) -> float:
     """
     soup = BeautifulSoup(html, "html.parser")
 
-    # Supercheap Auto uses <span class="price">PRICE</span>
-    price_tag = soup.find("span", class_="price")
+    # Look for the promo-price first
+    price_tag = soup.find("span", class_="promo-price")
 
-    if not price_tag or not price_tag.text:
+    # Fallback to other price span if promo-price not found
+    if not price_tag:
+        price_tag = soup.find("span", class_="price-sales")
+
+    if not price_tag or not price_tag.text.strip():
         raise ValueError("Price not found on page")
 
-    # Remove $ and commas, convert to float
     price_str = price_tag.text.replace("$", "").replace(",", "").strip()
 
     try:
