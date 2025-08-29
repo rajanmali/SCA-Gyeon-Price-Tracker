@@ -1,7 +1,11 @@
-import pytest
 from pricewatcher.scraper import fetch_product_page, parse_price
+import pytest
+import sys
+import os
+sys.path.insert(0, os.path.abspath(os.path.join(
+    os.path.dirname(__file__), '../pricewatcher')))
 
-# Sample product data
+
 PRODUCT = {
     "name": "Gyeon Wetcoat Sealant 500mL",
     "url": "https://www.supercheapauto.com.au/p/gyeon-gyeon-wetcoat-sealant-500ml/707086.html"
