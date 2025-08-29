@@ -16,9 +16,9 @@ def write_json(file_path, data):
         json.dump(data, f, indent=2)
 
 
-def read_json(file_path):
-    """Read a JSON file and return its contents."""
-    if os.path.exists(file_path):
-        with open(file_path, 'r') as f:
-            return json.load(f)
-    return {}
+def read_json(path: str) -> dict:
+    """Read JSON file and return dictionary. Returns empty dict if file is empty or missing."""
+    if not os.path.exists(path) or os.stat(path).st_size == 0:
+        return {}
+    with open(path, "r") as f:
+        return json.load(f)
