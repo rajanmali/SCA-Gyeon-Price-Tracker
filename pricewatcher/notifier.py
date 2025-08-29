@@ -26,6 +26,6 @@ def send_telegram(message: str) -> bool:
         response = requests.post(url, data=payload, timeout=10)
         response.raise_for_status()
         return True
-    except requests.RequestException as e:
+    except Exception as e:
         print(f"Failed to send Telegram message: {e}")
         return False

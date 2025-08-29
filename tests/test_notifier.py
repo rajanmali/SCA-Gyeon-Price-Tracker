@@ -1,5 +1,6 @@
 # tests/test_notifier.py
 import pytest
+import requests
 from unittest.mock import patch, MagicMock
 from pricewatcher.notifier import send_telegram
 
@@ -24,8 +25,8 @@ def test_send_telegram_success(mock_post, message):
 
 @patch("pricewatcher.notifier.requests.post")
 def test_send_telegram_failure(mock_post):
-    # Mock failed response (raise exception)
-    mock_post.side_effect = Exception("Network error")
+    # Mock failed response (raise a requests.RequestException)
+    mock_post.side_effect = requests.RequestException("Network error")
 
     result = send_telegram("Test message")
     assert result is False
