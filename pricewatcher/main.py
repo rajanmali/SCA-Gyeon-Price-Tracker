@@ -17,6 +17,8 @@ def track_prices():
     history = read_json(PRICES_JSON)
     today = datetime.now().strftime('%Y-%m-%d')
 
+    price_drop_detected = False  # Track if any price drop happened
+
     for product in products:
         try:
             html = fetch_product_page(product['url'])
@@ -39,6 +41,7 @@ def track_prices():
         if last_price is not None and price < last_price:
             send_telegram(
                 f"📉 Price dropped for {product['name']}! ${last_price:.2f} → ${price:.2f}")
+            price_drop_detected = True
 
         # Append today's price
         history[product['name']].append({
@@ -47,6 +50,11 @@ def track_prices():
         })
 
         print(f"{product['name']}: ${price:.2f}")
+
+    # If no price drop was detected, send a backup message
+    if not price_drop_detected:
+        send_telegram(
+            f"ℹ️ No price changes detected for any products at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     write_json(PRICES_JSON, history)
 
