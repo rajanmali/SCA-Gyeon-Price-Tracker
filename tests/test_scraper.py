@@ -1,16 +1,11 @@
 from pricewatcher.scraper import fetch_product_page, parse_price
 import pytest
-import sys
-import os
 import yaml
+from pricewatcher.config import PRODUCTS_YAML  # Import path from config
 
-sys.path.insert(0, os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../pricewatcher')))
 
 # Load products from YAML
-CONFIG_PATH = os.path.abspath(os.path.join(
-    os.path.dirname(__file__), '../config/products.yaml'))
-with open(CONFIG_PATH, 'r') as f:
+with open(PRODUCTS_YAML, 'r') as f:
     PRODUCTS = yaml.safe_load(f)
 
 

@@ -1,6 +1,8 @@
 import pytest
 from unittest.mock import patch
 from pricewatcher.main import track_prices
+# for consistency, currently not directly used
+from pricewatcher.config import PRODUCTS_YAML
 
 # Sample product list
 sample_products = [

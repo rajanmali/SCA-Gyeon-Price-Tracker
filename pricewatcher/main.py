@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 from pricewatcher.scraper import fetch_product_page, parse_price
 from pricewatcher.storage import read_yaml, read_json, write_json
+from pricewatcher.config import PRODUCTS_YAML, PRICES_JSON
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -13,8 +14,8 @@ HISTORY_PATH = os.path.join(DATA_FOLDER, 'prices.json')
 
 def track_prices():
     """Fetch current prices for all products and update price history."""
-    products = read_yaml(CONFIG_PATH)
-    history = read_json(HISTORY_PATH)
+    products = read_yaml(PRODUCTS_YAML)
+    history = read_json(PRICES_JSON)
     today = datetime.now().strftime('%Y-%m-%d')
 
     for product in products:
@@ -41,7 +42,7 @@ def track_prices():
 
         print(f"{product['name']}: ${price:.2f}")
 
-    write_json(HISTORY_PATH, history)
+    write_json(PRICES_JSON, history)
 
 
 if __name__ == "__main__":
