@@ -20,10 +20,15 @@ def track_prices():
     for product in products:
         try:
             html = fetch_product_page(product['url'])
+        except Exception as e:
+            print(f"Error fetching page for {product['name']}: {e}")
+            continue
+
+        try:
             price = parse_price(html)
         except Exception as e:
-            print(f"Error fetching price for {product['name']}: {e}")
-            continue
+            print(f"Error parsing price for {product['name']}: {e}")
+            continue  # Skip adding this product to history
 
         if product['name'] not in history:
             history[product['name']] = []
