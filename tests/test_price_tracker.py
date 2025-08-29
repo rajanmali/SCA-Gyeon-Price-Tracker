@@ -69,13 +69,18 @@ def test_track_prices_parse_error(mock_parse_price, mock_fetch, mock_write_json,
     mock_read_yaml.return_value = sample_products
     mock_read_json.return_value = {}
 
-    mock_fetch.side_effect = lambda url: "<html></html>"
-    # Simulate parse error for Product 1
+    # Use Option 1: mark Product 1 HTML to trigger parse error
+    def fetch_side_effect(url):
+        if "1" in url:
+            return "<html></html>_1"
+        return "<html></html>_2"
 
     def parse_side_effect(html):
-        if "1" in html:
+        if html == "<html></html>_1":
             raise ValueError("Price not found")
         return 29.99
+
+    mock_fetch.side_effect = fetch_side_effect
     mock_parse_price.side_effect = parse_side_effect
 
     track_prices()
