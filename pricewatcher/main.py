@@ -3,6 +3,7 @@ from datetime import datetime
 from pricewatcher.scraper import fetch_product_page, parse_price
 from pricewatcher.storage import read_yaml, read_json, write_json
 from pricewatcher.notifier import send_telegram
+from pricewatcher.utils import has_price_dropped
 from pricewatcher.config import PRODUCTS_YAML, PRICES_JSON
 
 
@@ -34,11 +35,10 @@ def track_prices():
             history[product_name] = []
 
         # Check for price drop
-        if history[product_name]:
+        if has_price_dropped(history, product_name, price):
             last_price = history[product_name][-1]['price']
-            if price < last_price:
-                message = f"📉 Price drop alert!\n{product_name} is now ${price:.2f} (was ${last_price:.2f})"
-                send_telegram(message)
+            message = f"📉 Price drop alert!\n{product_name} is now ${price:.2f} (was ${last_price:.2f})"
+            send_telegram(message)
 
         # Append today's price
         history[product_name].append({
