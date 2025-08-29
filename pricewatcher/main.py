@@ -1,8 +1,7 @@
 import os
-import json
-import yaml
 from datetime import datetime
 from pricewatcher.scraper import fetch_product_page, parse_price
+from pricewatcher.storage import read_yaml, read_json, write_json
 
 # Paths
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -11,34 +10,11 @@ CONFIG_PATH = os.path.abspath(os.path.join(
 DATA_FOLDER = os.path.abspath(os.path.join(BASE_DIR, '../data'))
 HISTORY_PATH = os.path.join(DATA_FOLDER, 'prices.json')
 
-# Ensure data folder exists
-os.makedirs(DATA_FOLDER, exist_ok=True)
-
-
-def load_products():
-    """Load products from YAML config file."""
-    with open(CONFIG_PATH, 'r') as f:
-        return yaml.safe_load(f)
-
-
-def load_history():
-    """Load price history from JSON file."""
-    if os.path.exists(HISTORY_PATH):
-        with open(HISTORY_PATH, 'r') as f:
-            return json.load(f)
-    return {}
-
-
-def save_history(history):
-    """Save price history to JSON file."""
-    with open(HISTORY_PATH, 'w') as f:
-        json.dump(history, f, indent=2)
-
 
 def track_prices():
     """Fetch current prices for all products and update price history."""
-    products = load_products()
-    history = load_history()
+    products = read_yaml(CONFIG_PATH)
+    history = read_json(HISTORY_PATH)
     today = datetime.now().strftime('%Y-%m-%d')
 
     for product in products:
@@ -60,7 +36,7 @@ def track_prices():
 
         print(f"{product['name']}: ${price:.2f}")
 
-    save_history(history)
+    write_json(HISTORY_PATH, history)
 
 
 if __name__ == "__main__":
